@@ -18,7 +18,7 @@ public class StreamSocket {
     private PrintWriter output;
 
     StreamSocket(InetAddress acceptorHost, int acceptorPort) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException, KeyManagementException {
-        SSLSocketFactory sslSocketFactory = getClientSocketContext("truststore.jks").getSocketFactory();
+        SSLSocketFactory sslSocketFactory = getClientSocketContext("public_key.jks").getSocketFactory();
         socket = (SSLSocket) sslSocketFactory.createSocket(acceptorHost, acceptorPort);
         setStreams();
     }
@@ -55,7 +55,7 @@ public class StreamSocket {
     }
 
     public static SSLContext getClientSocketContext(String key) throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException, KeyManagementException {
-        String truststorePassword = "password";
+        String truststorePassword = "123456";
         // Load Truststore
         KeyStore trustStore = KeyStore.getInstance("JKS");
         try (FileInputStream trustStoreStream = new FileInputStream(key)) {
@@ -74,7 +74,7 @@ public class StreamSocket {
     }
 
     public static SSLContext getServerSocketContext(String key) throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException, KeyManagementException, UnrecoverableKeyException {
-        String keystorePassword = "password";
+        String keystorePassword = "123456";
         // Load Truststore
         KeyStore keyStore = KeyStore.getInstance("JKS");
         try (FileInputStream trustStoreStream = new FileInputStream(key)) {

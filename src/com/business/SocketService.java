@@ -15,7 +15,6 @@ import java.security.cert.CertificateException;
 public class SocketService {
     private final InetAddress serverHost = InetAddress.getLocalHost();
     private final int serverPort = 7;
-    private static final String endMessage = ".";
     private final FilesService filesService;
 
     public SocketService(FilesService filesService) throws IOException {
@@ -28,13 +27,12 @@ public class SocketService {
         mySocket.sendMessage(txtMessage);
         String echo = mySocket.receiveMessage();
         System.out.println("echo: " + echo);
-        mySocket.sendMessage(endMessage);
         mySocket.close();
         return echo;
     }
 
     public void startServer() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException, CertificateException, IOException, UnrecoverableKeyException {
-        SSLServerSocketFactory sslServerSocketFactory = StreamSocket.getServerSocketContext("herong.jks").getServerSocketFactory();
+        SSLServerSocketFactory sslServerSocketFactory = StreamSocket.getServerSocketContext("danylo.jks").getServerSocketFactory();
         try (SSLServerSocket sslServerSocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(serverPort, 50, serverHost)) {
             System.out.println("Echo server ready.");
             while (true) {

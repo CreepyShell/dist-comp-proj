@@ -12,7 +12,6 @@ import java.util.ArrayList;
  */
 
 public class EchoServerThread implements Runnable {
-    static final String endMessage = ".";
     private final FilesService filesService;
     StreamSocket myDataSocket;
 
@@ -22,39 +21,34 @@ public class EchoServerThread implements Runnable {
     }
 
     public void run() {
-        boolean done = false;
         String message;
         try {
-            while (!done) {
-                message = myDataSocket.receiveMessage();
-                System.out.println("message received: " + message);
-                if ((message.trim()).equals(endMessage)) {
-                    //Session over; close the data socket.
-                    System.out.println("Session over.");
-                    myDataSocket.close();
-                    done = true;
-                } else if (message.trim().startsWith("{upload_txt}")) {
-                    Message messObj = new Message(message.replace("{upload_txt}", ""));
-                    if (filesService.writeInFile(messObj)) {
-                        myDataSocket.sendMessage("Wrote in file successfully");
-                        continue;
-                    }
-                } else if (message.trim().startsWith("{get_all_txt}")) {
-                    ArrayList<Message> messages = filesService.readMessages();
-                    StringBuilder result = new StringBuilder();
-                    for (Message m : messages) {
-                        result.append(m.toString()).append("|");
-                    }
-                    myDataSocket.sendMessage(result.toString());
-                    continue;
-                } else if (message.trim().startsWith("{id}")) {
-                    Message messObj = filesService.getMessageById(message.replace("{id}", "").trim());
-                    String result = messObj == null ? "Not found" : messObj.toString();
-                    myDataSocket.sendMessage(result);
-                    continue;
+            message = myDataSocket.receiveMessage();
+            System.out.println("message received: " + message);
+            if (message.trim().startsWith("{upload_txt}")) {
+                Message messObj = new Message(message.replace("{upload_txt}", ""));
+                if (filesService.writeInFile(messObj)) {
+                    myDataSocket.sendMessage("Wrote in file successfully");
+                } else {
+                    myDataSocket.sendMessage("Error with a file");
                 }
+            } else if (message.trim().startsWith("{get_all_txt}")) {
+                ArrayList<Message> messages = filesService.readMessages();
+                StringBuilder result = new StringBuilder();
+                for (Message m : messages) {
+                    result.append(m.toString()).append("|");
+                }
+                myDataSocket.sendMessage(result.toString());
+            } else if (message.trim().startsWith("{id}")) {
+                Message messObj = filesService.getMessageById(message.replace("{id}", "").trim());
+                String result = messObj == null ? "Not found" : messObj.toString();
+                myDataSocket.sendMessage(result);
+            } else {
                 myDataSocket.sendMessage("Unknown operation");
             }
+            System.out.println("Session over.");
+            myDataSocket.close();
+
         } catch (Exception ex) {
             System.out.println("Exception caught in thread: " + ex);
         }
