@@ -14,9 +14,9 @@ import java.util.ArrayList;
 public class EchoServerThread implements Runnable {
     static final String endMessage = ".";
     private final FilesService filesService;
-    MyStreamSocket myDataSocket;
+    StreamSocket myDataSocket;
 
-    public EchoServerThread(MyStreamSocket myDataSocket, FilesService filesService) {
+    public EchoServerThread(StreamSocket myDataSocket, FilesService filesService) {
         this.myDataSocket = myDataSocket;
         this.filesService = filesService;
     }

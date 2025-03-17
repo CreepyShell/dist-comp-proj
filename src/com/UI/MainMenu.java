@@ -5,6 +5,8 @@ import com.data.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.ConnectException;
 
 public class MainMenu extends JFrame {
@@ -53,10 +55,12 @@ public class MainMenu extends JFrame {
         searchMessage.addActionListener(l -> {
             try {
                 listModel.clear();
-                String message = socketService.sendMessage("{id}" + messageTxt.getText(), port);
+                String message = socketService.sendMessage("{id}" + messageTxt.getText());
                 listModel.addElement(message);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(searchMessage, "Server is not running, connection refused");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(searchMessage, "Smt went wrong: " + ex.getMessage());
+                JOptionPane.showMessageDialog(searchMessage, "Something went wrong: " + ex.getMessage());
             }
         });
 
@@ -70,10 +74,12 @@ public class MainMenu extends JFrame {
                 return;
             }
             try {
-                socketService.sendMessage("{upload_txt}" + txtMessage, port);
+                socketService.sendMessage("{upload_txt}" + txtMessage);
                 JOptionPane.showMessageDialog(uploadTxt, "Message uploaded successfully");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(uploadTxt, "Server is not running, connection refused");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(uploadTxt, "Validation error: " + ex.getMessage());
+                JOptionPane.showMessageDialog(uploadTxt, "Something went wrong: " + ex.getMessage());
             }
 
         });
@@ -89,14 +95,15 @@ public class MainMenu extends JFrame {
         messagesButton.addActionListener(l -> {
             try {
                 listModel.clear();
-                String messages = socketService.sendMessage("{get_all_txt}", port);
+                String messages = socketService.sendMessage("{get_all_txt}");
                 for (String message : messages.split("\\|")) {
                     listModel.addElement(message);
                 }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(messagesButton, "Server is not running, connection refused");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(uploadTxt, "Validation error: " + ex.getMessage());
+                JOptionPane.showMessageDialog(messagesButton, "Something went wrong: " + ex.getMessage());
             }
-
         });
 
         panel.add(label);

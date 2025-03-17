@@ -8,17 +8,17 @@ import java.io.*;
  *
  * @author M. L. Liu
  */
-public class MyStreamSocket extends Socket {
+public class StreamSocket extends Socket {
     private Socket socket;
     private BufferedReader input;
     private PrintWriter output;
 
-    MyStreamSocket(InetAddress acceptorHost, int acceptorPort) throws IOException {
+    StreamSocket(InetAddress acceptorHost, int acceptorPort) throws IOException {
         socket = new Socket(acceptorHost, acceptorPort);
         setStreams();
     }
 
-    public MyStreamSocket(Socket socket) throws IOException {
+    public StreamSocket(Socket socket) throws IOException {
         this.socket = socket;
         setStreams();
     }

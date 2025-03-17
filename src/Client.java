@@ -4,8 +4,10 @@ import com.business.FilesService;
 import com.business.SocketService;
 import com.data.User;
 
+import java.io.IOException;
+
 public class Client {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         FilesService filesService = new FilesService();
         SocketService socketService = new SocketService(filesService);
         AuthService authService = new AuthService();

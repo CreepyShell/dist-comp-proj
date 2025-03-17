@@ -14,12 +14,12 @@ import java.util.Scanner;
 import java.text.SimpleDateFormat;
 
 public class FilesService {
+    private final String filename = "messages.txt";
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public boolean writeInFile(Message message) throws IOException {
-        File file = new File("example.txt");
+        File file = new File(filename);
         if (!file.exists() && !file.createNewFile()) {
-            System.out.println("File not found or was not created");
             return false;
         }
         FileWriter writer = new FileWriter(file, true);
@@ -31,7 +31,7 @@ public class FilesService {
 
     public ArrayList<Message> readMessages() throws FileNotFoundException, ParseException {
         ArrayList<Message> messages = new ArrayList<>();
-        File file = new File("example.txt");
+        File file = new File(filename);
         if (!file.exists()) {
             return messages;
         }
@@ -45,14 +45,14 @@ public class FilesService {
     }
 
     public Message getMessageById(String id) throws FileNotFoundException, ParseException {
-        File file = new File("example.txt");
+        File file = new File(filename);
         if (!file.exists()) {
             return null;
         }
         Scanner reader = new Scanner(file);
         while (reader.hasNextLine()) {
             String[] line = reader.nextLine().split(",");
-            if(Objects.equals(line[0], id)){
+            if (Objects.equals(line[0], id)) {
                 return new Message(line[0], line[1], formatter.parse(line[2]));
             }
         }
