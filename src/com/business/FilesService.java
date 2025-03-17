@@ -9,23 +9,32 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.text.SimpleDateFormat;
 
 public class FilesService {
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public boolean writeInFile(Message message) throws IOException {
-        FileWriter writer = new FileWriter("example.txt");
+        File file = new File("example.txt");
+        if (!file.exists() && !file.createNewFile()) {
+            System.out.println("File not found or was not created");
+            return false;
+        }
+        FileWriter writer = new FileWriter(file, true);
         String date = formatter.format(message.getDate());
         writer.write(message.getId() + "," + message.getText() + "," + date + "\n");
         writer.close();
         return true;
-
     }
 
-    public List<Message> readMessages() throws FileNotFoundException, ParseException {
-        List<Message> messages = new ArrayList<>();
+    public ArrayList<Message> readMessages() throws FileNotFoundException, ParseException {
+        ArrayList<Message> messages = new ArrayList<>();
         File file = new File("example.txt");
+        if (!file.exists()) {
+            return messages;
+        }
         Scanner reader = new Scanner(file);
         while (reader.hasNextLine()) {
             String[] line = reader.nextLine().split(",");
@@ -33,5 +42,21 @@ public class FilesService {
         }
         reader.close();
         return messages;
+    }
+
+    public Message getMessageById(String id) throws FileNotFoundException, ParseException {
+        File file = new File("example.txt");
+        if (!file.exists()) {
+            return null;
+        }
+        Scanner reader = new Scanner(file);
+        while (reader.hasNextLine()) {
+            String[] line = reader.nextLine().split(",");
+            if(Objects.equals(line[0], id)){
+                return new Message(line[0], line[1], formatter.parse(line[2]));
+            }
+        }
+        reader.close();
+        return null;
     }
 }

@@ -1,24 +1,24 @@
 package com.UI;
 
-import com.business.MessageService;
+import com.business.SocketService;
 import com.data.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.ConnectException;
 
 public class MainMenu extends JFrame {
+    private final int port = 7;
     private final WindowsManager windowsManager;
-    private final User currentUser;
 
-    public MainMenu(User user, WindowsManager windowsManager, MessageService messageService) {
+    public MainMenu(User user, WindowsManager windowsManager, SocketService socketService) {
         this.windowsManager = windowsManager;
-        this.currentUser = user;
         this.setTitle("com.business.client_server_code.Main menu");
         JPanel panel = new JPanel();
         this.setResizable(false);
         panel.setLayout(null);
 
-        JLabel label = new JLabel("Welcome to the TCP client, " + currentUser.getUsername() + "!");
+        JLabel label = new JLabel("Welcome to the TCP client, " + user.getUsername() + "!");
         label.setBounds(80, 20, 400, 21);
         label.setFont(new Font("Verdana", Font.BOLD, 18));
 
@@ -53,7 +53,7 @@ public class MainMenu extends JFrame {
         searchMessage.addActionListener(l -> {
             try {
                 listModel.clear();
-                String message = messageService.getMessageById(messageTxt.getText());
+                String message = socketService.sendMessage("{id}" + messageTxt.getText(), port);
                 listModel.addElement(message);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(searchMessage, "Smt went wrong: " + ex.getMessage());
@@ -67,12 +67,15 @@ public class MainMenu extends JFrame {
             String txtMessage = messageTxt.getText();
             if (txtMessage.length() < 3) {
                 JOptionPane.showMessageDialog(uploadTxt, "Validation error: message is less than 3 characters");
-                try {
-                    messageService.uploadMessage(txtMessage);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(uploadTxt, "Validation error: " + ex.getMessage());
-                }
+                return;
             }
+            try {
+                socketService.sendMessage("{upload_txt}" + txtMessage, port);
+                JOptionPane.showMessageDialog(uploadTxt, "Message uploaded successfully");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(uploadTxt, "Validation error: " + ex.getMessage());
+            }
+
         });
 
         JList<String> messageList = new JList<>(listModel);
@@ -86,8 +89,8 @@ public class MainMenu extends JFrame {
         messagesButton.addActionListener(l -> {
             try {
                 listModel.clear();
-                String[] messages = messageService.getAllMessages();
-                for (String message : messages) {
+                String messages = socketService.sendMessage("{get_all_txt}", port);
+                for (String message : messages.split("\\|")) {
                     listModel.addElement(message);
                 }
             } catch (Exception ex) {

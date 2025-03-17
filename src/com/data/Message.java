@@ -25,7 +25,7 @@ public class Message {
     }
 
     public void setId() {
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString().substring(0, 4);
     }
 
     public void setId(String id) {
@@ -46,5 +46,10 @@ public class Message {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return this.getId() + ", " + this.getText() + ", " + this.getDate();
     }
 }

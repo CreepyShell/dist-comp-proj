@@ -1,7 +1,7 @@
 package com.UI;
 
 import com.business.AuthService;
-import com.business.MessageService;
+import com.business.SocketService;
 import com.data.User;
 
 public class WindowsManager {
@@ -11,16 +11,17 @@ public class WindowsManager {
     private IntroductionWindow introductionWindow;
     private AuthWindow authWindow;
     private MainMenu mainMenu;
-    private MessageService messageService = new MessageService();
+    private final SocketService socketService;
 
-    private WindowsManager(User user, AuthService authenticationService) {
+    private WindowsManager(User user, AuthService authenticationService, SocketService socketService) {
         currentUser = user;
         this.authenticationService = authenticationService;
+        this.socketService = socketService;
     }
 
-    public static WindowsManager getInstance(User user, AuthService authenticationService) {
+    public static WindowsManager getInstance(User user, AuthService authenticationService, SocketService messageService) {
         if (windowsManagerInstance == null)
-            windowsManagerInstance = new WindowsManager(user, authenticationService);
+            windowsManagerInstance = new WindowsManager(user, authenticationService, messageService);
         return windowsManagerInstance;
     }
 
@@ -37,7 +38,7 @@ public class WindowsManager {
     }
 
     public void openMainMenuWindow(User currentUser) {
-        mainMenu = new MainMenu(currentUser, this, messageService);
+        mainMenu = new MainMenu(currentUser, this, socketService);
     }
 
     public void setUser(User user) {

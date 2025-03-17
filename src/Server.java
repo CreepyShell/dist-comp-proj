@@ -1,13 +1,10 @@
-import com.business.MessageService;
+import com.business.FilesService;
+import com.business.SocketService;
 
 public class Server {
     public static void main(String[] args) {
-//        AuthService authService = new AuthService();
-//        User user = null;
-//        WindowsManager manager = WindowsManager.getInstance(user, authService);
-//        manager.openIntroductionWindow();
-
-        MessageService messageService = new MessageService();
-        messageService.startServer(7);
+        FilesService filesService = new FilesService();
+        SocketService socketService = new SocketService(filesService);
+        socketService.startServer(7);
     }
 }

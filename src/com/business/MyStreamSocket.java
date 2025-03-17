@@ -1,5 +1,4 @@
-package com.business.client_server_code;
-
+package com.business;
 import java.net.*;
 import java.io.*;
 
@@ -14,11 +13,9 @@ public class MyStreamSocket extends Socket {
     private BufferedReader input;
     private PrintWriter output;
 
-    MyStreamSocket(InetAddress acceptorHost,
-                   int acceptorPort) throws SocketException, IOException {
+    MyStreamSocket(InetAddress acceptorHost, int acceptorPort) throws IOException {
         socket = new Socket(acceptorHost, acceptorPort);
         setStreams();
-
     }
 
     public MyStreamSocket(Socket socket) throws IOException {
